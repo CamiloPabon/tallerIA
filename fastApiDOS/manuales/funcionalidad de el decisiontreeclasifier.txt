@@ -1,0 +1,22 @@
+El DecisionTreeClassifier es un algoritmo de clasificación de aprendizaje supervisado que se utiliza para modelar datos categóricos o continuos mediante la creación de un árbol de decisiones. En un árbol de decisiones, cada nodo representa una "pregunta" sobre los datos, y cada hoja representa una "respuesta" o una clasificación final.
+
+¿Cómo funciona el DecisionTreeClassifier?
+Selección de la característica y división del nodo:
+
+El objetivo principal del DecisionTreeClassifier es dividir los datos en subconjuntos más pequeños a medida que avanza a través del árbol. Cada nodo realiza una pregunta sobre una característica (feature) de los datos, como por ejemplo "¿El valor de size es mayor que 500?".
+El árbol selecciona una característica (una columna del dataset) en cada nodo para hacer la división basándose en una métrica de "pureza" (por ejemplo, el criterio de Gini o la entropía). Estas métricas se utilizan para determinar qué pregunta o división de los datos puede reducir al máximo la incertidumbre o la mezcla de clases en los subconjuntos resultantes.
+Criterio de partición:
+
+El árbol de decisión decide cuál característica utilizar en cada nodo y cómo dividir los datos según una métrica específica, como:
+Índice de Gini: Cuantifica la probabilidad de que un elemento seleccionado al azar sea clasificado incorrectamente si fuera etiquetado según la distribución de las clases en ese nodo.
+Entropía (Información Gain): Mide la cantidad de "desorden" o impureza de los datos en un nodo. El objetivo es minimizar la entropía a medida que se realizan las divisiones.
+Construcción del árbol:
+
+El árbol sigue creando nodos y dividiendo los datos hasta que cada nodo terminal (o "hoja") contiene datos que pertenecen en su totalidad a una clase (o hasta que ya no puede dividirse más de forma significativa).
+Profundidad máxima del árbol:
+
+La profundidad del árbol es un parámetro importante que controla cuántas divisiones puede hacer el árbol antes de detenerse. Si el árbol es muy profundo (sin restricciones), puede llegar a aprender incluso las variaciones más pequeñas del dataset, lo que lleva al sobreajuste (overfitting).
+En tu código, el DecisionTreeClassifier tiene un parámetro max_depth=1, lo que significa que el árbol de decisión solo se permitirá dividir los datos una vez antes de llegar a una decisión. Esto crea un árbol muy "débil" (con poca capacidad de aprendizaje), pero cuando se utiliza con un algoritmo como AdaBoost (como en tu código), se crea una combinación de muchos de estos árboles débiles para mejorar el rendimiento global.
+Predicción:
+
+Una vez que el árbol ha sido entrenado, para hacer una predicción sobre un nuevo dato, el árbol "navega" desde la raíz hacia abajo, tomando decisiones en cada nodo según los valores de las características del dato, hasta llegar a una hoja que contiene la clase predicha.

@@ -1,0 +1,139 @@
+
+Manual de Uso del Programa: API para Detección de Ataques DOS usando FastAPI y Docker
+
+Este manual te guiará paso a paso sobre cómo usar el programa, que consiste en una API basada en FastAPI para detectar ataques DOS mediante un modelo de machine learning previamente entrenado con AdaBoost.
+
+---
+
+Requisitos previos:
+Antes de comenzar, asegúrate de tener instaladas las siguientes herramientas en tu entorno:
+1. Docker: Para ejecutar la aplicación dentro de un contenedor.
+2. Postman (opcional): Para realizar pruebas de las solicitudes a la API.
+3. Git (opcional): Si deseas clonar el repositorio desde un control de versiones.
+
+---
+
+Estructura del Proyecto:
+```
+/app/
+├── Dockerfile                     # Archivo para crear el contenedor Docker
+├── main.py                        # Código principal de la API FastAPI
+├── model.py                       # Código para cargar el modelo entrenado y el scaler
+├── train.py                       # Código para entrenar y guardar el modelo
+├── requirements.txt               # Archivo con las dependencias
+├── /models/
+│   ├── AdaBoostClassifier.pkl      # Archivo con el modelo entrenado (guardado en formato pickle)
+│   └── scaler.pkl                 # Archivo con el scaler para los datos
+└── /logs/
+    └── nginx_access_log.csv        # Archivo con los logs de Nginx para entrenamiento
+```
+
+---
+
+Pasos para ejecutar el programa:
+
+1. Clonar el proyecto (opcional):
+   Si tienes el proyecto en un repositorio de Git, clona el repositorio:
+   ```
+   git clone <URL-del-repositorio>
+   cd <nombre-del-repositorio>
+   ```
+
+2. Crear el contenedor Docker:
+   Para ejecutar la API usando Docker, primero debes construir la imagen y luego correr el contenedor.
+   - Abre una terminal en la carpeta raíz del proyecto.
+   - Ejecuta el siguiente comando para construir la imagen Docker:
+   ```
+   docker build -t dos-detection-app .
+   ```
+   - Luego ejecuta el siguiente comando para iniciar el contenedor:
+   ```
+   docker run -d -p 8000:8000 dos-detection-app
+   ```
+   Esto expondrá la API en `http://localhost:8000`.
+
+---
+
+Uso de la API:
+La API expone un solo endpoint para la detección de ataques DOS. Puedes interactuar con la API usando Postman, `curl` u otras herramientas.
+
+1. Endpoint disponible:
+   - POST `/DOS`: Detecta si una solicitud es un ataque DOS.
+
+2. Datos de entrada:
+   El cuerpo de la solicitud (en formato JSON) debe incluir tres campos:
+   - requests_per_second: El número de solicitudes por segundo.
+   - size: El tamaño de la solicitud.
+   - status: El código de estado HTTP de la solicitud.
+
+   Ejemplo de solicitud:
+   ```json
+   {
+     "requests_per_second": 50,
+     "size": 3000,
+     "status": 200
+   }
+   ```
+
+3. Realizar una solicitud con Postman:
+   - Abre Postman.
+   - Crea una nueva solicitud de tipo POST.
+   - URL: `http://localhost:8000/DOS`.
+   - Cuerpo (raw, formato JSON):
+   ```json
+   {
+     "requests_per_second": 50,
+     "size": 3000,
+     "status": 200
+   }
+   ```
+   - Envía la solicitud.
+
+4. Respuesta de la API:
+   - Si es un ataque DOS:
+   ```json
+   {
+     "message": "La solicitud es considerada un ataque DOS."
+   }
+   ```
+   - Si la solicitud es normal:
+   ```json
+   {
+     "message": "La solicitud es normal."
+   }
+   ```
+
+---
+
+Entrenar el modelo nuevamente (opcional):
+Si deseas entrenar un nuevo modelo, sigue estos pasos:
+1. Modifica o reemplaza el archivo `nginx_access_log.csv` en el directorio `/logs/` con los nuevos datos.
+2. Ejecuta el archivo `train.py`:
+   ```
+   python3 train.py
+   ```
+
+---
+
+Comandos Docker útiles:
+- Detener el contenedor:
+   ```
+   docker stop <nombre-del-contenedor>
+   ```
+- Listar los contenedores activos:
+   ```
+   docker ps
+   ```
+- Ver logs del contenedor:
+   ```
+   docker logs <nombre-del-contenedor>
+   ```
+- Eliminar contenedores inactivos:
+   ```
+   docker rm $(docker ps -a -q)
+   ```
+
+---
+
+Conclusión:
+Este manual te ayudará a ejecutar la API en Docker y a interactuar con ella usando Postman.
